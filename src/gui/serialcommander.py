@@ -46,7 +46,7 @@ class SerialCommander(QWidget):
         if os_name == 'Linux':
             self.ser.port = '/dev/ttyACM0'  # Change this to your Linux serial port
         elif os_name == 'Windows':
-            self.ser.port = 'COM3'  # Change this to your Windows serial port
+            self.ser.port = 'COM14'  # Change this to your Windows serial port
         else:
             print(f"Unsupported OS: {os_name}")
             return
