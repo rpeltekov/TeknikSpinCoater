@@ -1,5 +1,5 @@
  /*
- * Title: MovePositionAbsolute
+ * Title: Teknic Spin Coater Main File
  *
  * Objective:
  *    This example demonstrates control of a ClearPath motor in Step and
