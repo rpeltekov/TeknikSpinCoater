@@ -65,14 +65,14 @@ class SerialCommander(QWidget):
         if os_name == 'Linux':
             self.ser.port = '/dev/ttyACM0'  # Change this to your Linux serial port
         elif os_name == 'Windows':
-            ports = serial.tools.list_ports.comports()
-            for port, desc, hwid in sorted(ports):
-                # Assuming the first available port is the one we want to use
-                self.ser.port = port
-                break
-            else:
-                print("No active COM ports found on Windows.")
-                return
+            self.ser.port = "COM14" #serial.tools.list_ports.comports()
+            #for port, desc, hwid in sorted(ports):
+            #    # Assuming the first available port is the one we want to use
+            #    self.ser.port = port
+            #    break
+            #else:
+            #    print("No active COM ports found on Windows.")
+            #    return
         else:
             print(f"Unsupported OS: {os_name}")
             return
