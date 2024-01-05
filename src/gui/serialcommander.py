@@ -1,7 +1,15 @@
 import platform
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QTextEdit, QLabel
 import serial
+
+class EmittingStream(object):
+    def __init__(self, text_widget):
+        self.text_widget = text_widget
+
+    def write(self, text):
+        self.text_widget.append(text)
+
 
 class SerialCommander(QWidget):
     def __init__(self):
@@ -25,12 +33,23 @@ class SerialCommander(QWidget):
         self.sendButton = QPushButton('Send Command', self)
         self.sendButton.clicked.connect(self.sendCommand)
 
+        # Log Console
+        self.logLabel = QLabel('Log:', self)
+        self.logConsole = QTextEdit(self)
+        self.logConsole.setReadOnly(True)
+
+        # Redirect stdout and stderr
+        sys.stdout = EmittingStream(self.logConsole)
+        sys.stderr = EmittingStream(self.logConsole)
+
         # Layout
         layout = QVBoxLayout()
         layout.addWidget(self.button1)
         layout.addWidget(self.button2)
         layout.addWidget(self.commandInput)
         layout.addWidget(self.sendButton)
+        layout.addWidget(self.logLabel)
+        layout.addWidget(self.logConsole)
         self.setLayout(layout)
 
         # Window settings
@@ -46,7 +65,14 @@ class SerialCommander(QWidget):
         if os_name == 'Linux':
             self.ser.port = '/dev/ttyACM0'  # Change this to your Linux serial port
         elif os_name == 'Windows':
-            self.ser.port = 'COM14'  # Change this to your Windows serial port
+            ports = serial.tools.list_ports.comports()
+            for port, desc, hwid in sorted(ports):
+                # Assuming the first available port is the one we want to use
+                self.ser.port = port
+                break
+            else:
+                print("No active COM ports found on Windows.")
+                return
         else:
             print(f"Unsupported OS: {os_name}")
             return
